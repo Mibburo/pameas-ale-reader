@@ -1,0 +1,158 @@
+syntax = "proto2";
+
+package alelimited;
+
+option java_package = "com.example.alelimited";
+option java_outer_classname = "AleLimited";
+
+message nb_event {
+  enum event_operation {
+    OP_ADD = 0;
+    OP_UPDATE = 1;
+    OP_DELETE = 2;
+    OP_SYNC = 3;
+  }
+  enum license_info {
+    hb_Dhak             = 10;
+    hb_LimitOk          = 11;
+    hb_ThresholdXNotice = 20;
+    hb_ThresholdOkNotice= 21;
+    hb_LicenseExceeded  = 31;
+    hb_EvalStarted      = 41;
+    hb_NewLimitExceeded = 51;
+    hb_EvalDone         = 61;
+    hb_ALSOnline        = 71;
+    hb_ALSDieing        = 81;
+    hb_LICENSE_BLOCKED  = 91;
+  }
+  optional uint64 seq = 1;
+  optional uint32 timestamp = 2;
+  optional event_operation op = 3;
+  optional uint64 topic_seq = 4;
+  optional bytes source_id = 5;
+
+  //For now required license_info lic_info = 6 [default=hb_Dhak];
+  optional license_info lic_info = 6 [default=hb_Dhak];
+
+  // One of the following is populated depending on the topic
+  optional location location = 500;
+  optional presence presence = 501;
+  optional geofence geofence = 516;
+  optional geofence_notify geofence_notify = 517;
+
+}
+
+message location {
+  enum algorithm {
+    ALGORITHM_TRIANGULATION = 0;
+    ALGORITHM_AP_PLACEMENT = 1;
+    ALGORITHM_CALIBRATION = 2;
+    ALGORITHM_ESTIMATION = 3;
+    ALGORITHM_LOW_DENSITY = 4;
+  }
+  enum error_code {
+    ERROR_CODE_NO_ERROR = 0; // No error (a new fix is available)
+    ERROR_CODE_0_RSSI = 1; // 0 RSSI could be used with the PDB
+    ERROR_CODE_ONLY_1_RSSI = 2; // 1 RSSI could be used with the PDB
+    ERROR_CODE_ONLY_2_RSSI = 3; // 2 RSSI could be used with the PDB
+    ERROR_CODE_RSSI_QUALITY = 4; // RSSIs measurement are poor quality
+    ERROR_CODE_RSSI_OLD_TIMESTAMP = 8; // timestamps of RSSI is too old
+    ERROR_CODE_RSSI_CLOSE_TIMESTAMP = 16; // time since last fix computed is under threshold
+    ERROR_CODE_LEGACY = 0xFFFFF; // This is the legacy error code for ALE version < 2.0.0.15 (internal usage)
+  }
+  message record {
+    required uint32 timestamp = 1;
+    required mac_address radio_mac = 2;
+    required int32 rssi_val = 3;
+    optional uint32 channel = 4;
+  }
+  message rtls_tag {
+    optional uint32 battery    = 1;
+    optional uint32 channel    = 2;
+    optional uint32 tx_power   = 3;
+    optional uint32 data_rate  = 4;
+    optional bytes payload     = 5;
+  }
+
+  optional mac_address sta_eth_mac = 1;
+  optional float sta_location_x = 2;
+  optional float sta_location_y = 3;
+  optional uint32 error_level = 7;
+  optional bool associated = 8;
+  optional bytes campus_id = 9;
+  optional bytes building_id = 10;
+  optional bytes floor_id = 11;
+  optional bytes hashed_sta_eth_mac = 12;
+  repeated bytes geofence_ids = 13;
+  optional algorithm loc_algorithm = 14;
+  optional uint32 rssi_val = 15;
+  optional double longitude = 16;
+  optional double latitude = 17;
+  optional double altitude = 18;
+  optional measurement_unit unit = 19;
+  optional target_dev_type target_type = 20 [default=TARGET_TYPE_STATION];
+  optional error_code err_code = 21;
+  repeated record records = 22;
+  repeated string geofence_names = 23;
+  repeated rtls_tag rtls_tag_info = 24;
+}
+
+message presence {
+  optional mac_address sta_eth_mac = 1;
+  optional bool associated = 2;
+  optional bytes hashed_sta_eth_mac = 3;
+  optional string ap_name = 4;
+  optional mac_address radio_mac = 5;
+  optional target_dev_type target_type = 6 [default=TARGET_TYPE_STATION];
+}
+
+message geofence {
+  optional bytes floor_id = 1; // 16 bytes id
+  optional bytes geofence_id = 2; // 16 bytes id
+  optional string geofence_name = 3;
+  optional string type = 4;
+  repeated point point_list = 5;
+}
+
+message geofence_notify {
+  enum zone_event {
+    ZONE_IN = 0;
+    ZONE_OUT = 1;
+  }
+  optional zone_event geofence_event = 1;
+  optional bytes geofence_id = 2;
+  optional string geofence_name = 3;
+  optional mac_address sta_mac = 4;
+  optional bool associated = 5;
+  optional uint32 dwell_time = 6 [default=0];
+  repeated group Access_point_info = 7 {
+    optional mac_address ap_mac = 8;
+    optional string ap_name = 9;
+    optional mac_address radio_bssid = 10;
+    optional uint32 rssi_val = 11;
+  }
+  optional bytes hashed_sta_mac = 30;
+}
+
+message mac_address {
+  required bytes addr = 1; // 6 bytes
+}
+
+message point {
+  optional float x = 1;
+  optional float y = 2;
+}
+
+
+enum measurement_unit {
+  METERS = 0;
+  FEET = 1;
+  PIXELS = 2;
+}
+
+enum target_dev_type {
+  TARGET_TYPE_UNKNOWN          = 0;
+  TARGET_TYPE_STATION          = 1;
+  TARGET_TYPE_TAG              = 2;
+  TARGET_TYPE_UNSECURE         = 3;
+}
