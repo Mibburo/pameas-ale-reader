@@ -1,17 +1,16 @@
 package com.example.ale.service;
 
+import com.example.ale.config.RestTemplateConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.Map;
+import java.security.GeneralSecurityException;
 
 @Slf4j
 @Service
@@ -20,7 +19,10 @@ public class AleRestService {
     @Value("${ale.host}")
     private String aleHost;
 
-    private static HttpHeaders getHeaders ()
+    @Autowired
+    RestTemplateConfig restTemplate;
+
+    /*private static HttpHeaders getHeaders ()
     {
         String adminuserCredentials = "admin:welcome123";
         String encodedCredentials =
@@ -30,7 +32,7 @@ public class AleRestService {
         httpHeaders.add("Authorization", "Basic " + encodedCredentials);
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         return httpHeaders;
-    }
+    }*/
 
 //    public Map<String, Object> getSomething() {
 //        final String uri = "https://" + aleHost + "/api/v1/geo_fence";
@@ -48,13 +50,13 @@ public class AleRestService {
 //        return responseEntity.getBody();
 //    }
 
-    public String getSomething2() {
+    public String getGeofences() throws GeneralSecurityException {
 
         String clientId = "admin";
         String clientSecret = "welcome123";
 
         final String uri = "https://" + aleHost + "/api/v1/geo_fence";
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTempl = restTemplate.restTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -64,19 +66,9 @@ public class AleRestService {
         log.info(request.toString());
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(uri);
         log.info("URI -" + builder.toUriString());
-        ResponseEntity<String> response = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, request, String.class);
+        ResponseEntity<String> response = restTempl.exchange(builder.build().encode().toUri(), HttpMethod.GET, request, String.class);
         log.info("Response" + response.getBody());
 
         return response.getBody();
-    }
-
-    public String getSomething() {
-        final String uri = "https://" + aleHost + "/api/v1/geo_fence";
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        String result = restTemplate.getForObject(uri, String.class);
-        log.info("QQQQQQQQQQQQQQQQQQQQQQQQQ geofence rest api result :{}", result);
-        return result;
     }
 }

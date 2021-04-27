@@ -5,10 +5,9 @@ import com.example.ale.service.AleRestService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.security.GeneralSecurityException;
 
 @Slf4j
 @RestController
@@ -34,19 +33,12 @@ public class AleController {
     @PostMapping("/killReader")
     @ResponseStatus(value = HttpStatus.OK)
     public void testSecondRestCall() throws Exception {
-        log.info("LLLLLLLLLLLLLLLLLLLLLLLLL new rest call");
         aleReader.killSwitch();
-        log.info("KKKKKKKKKKKKKKKKKKKKKKKK end kill switch");
-    }
-
-    @GetMapping("/geofence")
-    public String testGeofenceRestApi(){
-        return aleRestService.getSomething();
     }
 
     @GetMapping("/geofence2")
-    public String testGeofenceRestApi2(){
-        return aleRestService.getSomething2();
+    public String testGeofenceRestApi2() throws GeneralSecurityException {
+        return aleRestService.getGeofences();
     }
 
 }

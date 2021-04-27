@@ -21,6 +21,7 @@ public class PersonalInfo {
     private String surname;
     private String dateOfBirth;
     private String sex;
+    private String clientAddress;
     //eId or nationalId
     private String personalId;
     private String passportNo;

@@ -18,7 +18,7 @@ public class GeofenceNtf {
     @Id
     private String id;
 
-    private String untransformedAddress;
+    //private String untransformedAddress;
     private String gfEvent;
     private String gfId;
     private String gfName;

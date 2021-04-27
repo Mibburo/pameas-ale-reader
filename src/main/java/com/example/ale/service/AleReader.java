@@ -173,7 +173,7 @@ public class AleReader {
 
         location.setTimestamp(DateUtils.dateToString(Instant.ofEpochMilli(System.currentTimeMillis()).atZone(ZoneId.systemDefault()).toLocalDateTime()));
 
-        location.setUntransformedAddress(Converter.bytesToHex(locMsg.getStaEthMac().toByteArray()));
+        //location.setUntransformedAddress(Converter.bytesToHex(locMsg.getStaEthMac().toByteArray()));
 
         location.setXLocation(String.valueOf(locMsg.getStaLocationX()));
         location.setYLocation(String.valueOf(locMsg.getStaLocationY()));
@@ -184,18 +184,19 @@ public class AleReader {
         location.setFloorId(Converter.bytesToHex(locMsg.getFloorId().toByteArray()));
         location.setHashedMacAddress(Converter.bytesToHex(locMsg.getHashedStaEthMac().toByteArray()));
         location.setGeofenceNames(locMsg.getGeofenceNamesList());
+
         if(locMsg.getGeofenceIdsCount() > 0){
             location.setGeofenceId(Converter.bytesToHex(locMsg.getGeofenceIds(0).toByteArray()));
-
         }
-        location.setLocAlgorithm(String.valueOf(locMsg.getLocAlgorithm()));
+
+        /*location.setLocAlgorithm(String.valueOf(locMsg.getLocAlgorithm()));
         location.setLongitude(String.valueOf(locMsg.getLongitude()));
         location.setLatitude(String.valueOf(locMsg.getLatitude()));
         location.setAltitude(String.valueOf(locMsg.getAltitude()));
         location.setMUnit(String.valueOf(locMsg.getUnit()));
         location.setTargetType(String.valueOf(locMsg.getTargetType()));
         location.setErrorCode(String.valueOf(locMsg.getErrCode()));
-        location.setRssiVal(String.valueOf(locMsg.getRssiVal()));
+        location.setRssiVal(String.valueOf(locMsg.getRssiVal()));*/
 
         List<LocationRecord> locRecords = new ArrayList<>();
         List<AleLimited.location.record> records = locMsg.getRecordsList();
@@ -207,10 +208,7 @@ public class AleReader {
             record.setChannel(String.valueOf(rec.getChannel()));
             locRecords.add(record);
         }
-        location.setRecords(locRecords);
-
-
-
+        //location.setRecords(locRecords);
 
         if(locMsg.getGeofenceIdsCount() > 0){
             location.setGeofenceId(Converter.bytesToHex(locMsg.getGeofenceIds(0).toByteArray()));
@@ -323,7 +321,7 @@ public class AleReader {
         saveGfToDb(gfntf, macAddress);
 
         //make call to brms
-        sendToBrms(gfntf, macAddress);
+        //sendToBrms(gfntf, macAddress);
 
     }
 
@@ -341,7 +339,7 @@ public class AleReader {
         GeofenceNtf geofenceNtf = new GeofenceNtf();
 
         geofenceNtf.setMacAddress(macAddress);
-        geofenceNtf.setUntransformedAddress(Converter.bytesToHex(gfntf.getStaMac().toByteArray()));
+        //geofenceNtf.setUntransformedAddress(Converter.bytesToHex(gfntf.getStaMac().toByteArray()));
         geofenceNtf.setGfEvent(String.valueOf(gfntf.getGeofenceEvent()));
         geofenceNtf.setGfId(Converter.bytesToHex(gfntf.getGeofenceId().toByteArray()));
         geofenceNtf.setGfName(gfntf.getGeofenceName());
