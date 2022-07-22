@@ -22,6 +22,7 @@ public class ClientLocation {
     private String macAddress;
     private String hashedMacAddress;
     private List<Location> locationHistory;
+    private List<GeofenceNtf> geofenceHistory;
 //    private String xLocation;
 //    private String yLocation;
 //    private String errorLevel;

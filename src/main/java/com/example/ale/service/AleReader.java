@@ -69,7 +69,8 @@ public class AleReader {
 
             //  Connect to ale server
             ZMQ.Socket subscriber = context.createSocket(SocketType.SUB);
-            String url = "tcp://" + aleHost + ":" + nbApiPort;
+            String url = "wss://app-eucentral3.central.arubanetworks.com/streaming/api";
+            //String url = "tcp://" + aleHost + ":" + nbApiPort;
 
             subscriber.connect(url);
             String topic = "";

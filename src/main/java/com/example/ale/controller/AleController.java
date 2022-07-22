@@ -2,6 +2,7 @@ package com.example.ale.controller;
 
 import com.example.ale.service.AleReader;
 import com.example.ale.service.AleRestService;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,11 @@ public class AleController {
     @GetMapping("/geofence2")
     public String testGeofenceRestApi2() throws GeneralSecurityException {
         return aleRestService.getGeofences();
+    }
+
+    @GetMapping("/getAccessToken")
+    public String getAccessToken() throws UnirestException {
+        return aleRestService.getAccessToken();
     }
 
 }
